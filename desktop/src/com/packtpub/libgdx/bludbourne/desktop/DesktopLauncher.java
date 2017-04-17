@@ -7,20 +7,18 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.packtpub.libgdx.bludbourne.BludBourne;
 
 public class DesktopLauncher {
-	public static void main (String[] arg) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
-		config.title = "BludBourne";
-		config.useGL30 = false;
-		config.width = 800;
-		config.height = 600;
+    public static void main(String[] arg) {
+        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
-		Application app = new LwjglApplication(new BludBourne(), config);
+        config.title = "BludBourne";
+        config.useGL30 = false;
+        config.width = 800;
+        config.height = 600;
 
-		Gdx.app = app;
-		//Gdx.app.setLogLevel(Application.LOG_INFO);
-		Gdx.app.setLogLevel(Application.LOG_DEBUG);
-		//Gdx.app.setLogLevel(Application.LOG_ERROR);
-		//Gdx.app.setLogLevel(Application.LOG_NONE);
-	}
+        Application app = new LwjglApplication(new BludBourne(), config);
+
+        Gdx.app = app;
+        Gdx.app.setLogLevel(Application.LOG_DEBUG);
+    }
 }
