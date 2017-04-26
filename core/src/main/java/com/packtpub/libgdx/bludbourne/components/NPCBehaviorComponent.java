@@ -25,9 +25,6 @@ public class NPCBehaviorComponent extends BehaviorComponent {
 
     @Override
     public void update(Entity entity, float delta) {
-        /*if (keys.get(Keys.QUIT)) {
-            Gdx.app.exit();
-        }*/
 
         //If IMMOBILE, don't update anything
         if (currentState == State.IMMOBILE) {

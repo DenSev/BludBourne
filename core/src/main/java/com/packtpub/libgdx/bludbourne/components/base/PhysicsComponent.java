@@ -8,16 +8,18 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
-import com.packtpub.libgdx.bludbourne.MapManager;
 import com.packtpub.libgdx.bludbourne.entity.Direction;
 import com.packtpub.libgdx.bludbourne.entity.Entity;
+import com.packtpub.libgdx.bludbourne.entity.State;
 import com.packtpub.libgdx.bludbourne.map.Map;
+import com.packtpub.libgdx.bludbourne.map.MapManager;
 
 public abstract class PhysicsComponent extends Component {
     private static final String TAG = PhysicsComponent.class.getSimpleName();
 
     public abstract void update(Entity entity, MapManager mapMgr, float delta);
 
+    protected State state;
     protected Vector2 nextEntityPosition;
     protected Vector2 currentEntityPosition;
     protected Direction currentDirection;
@@ -34,6 +36,14 @@ public abstract class PhysicsComponent extends Component {
     }
 
     protected PhysicsComponent() {
+        //init common handlers
+        handlers.put(MESSAGE.CURRENT_STATE, (Object... args) -> state = (State) args[0]);
+        handlers.put(MESSAGE.CURRENT_DIRECTION, (Object... args) -> currentDirection = (Direction) args[0]);
+        handlers.put(MESSAGE.INIT_START_POSITION, (Object... args) -> {
+            currentEntityPosition = (Vector2) args[0];
+            nextEntityPosition.set(currentEntityPosition.x, currentEntityPosition.y);
+        });
+
         this.nextEntityPosition = new Vector2(0, 0);
         this.currentEntityPosition = new Vector2(0, 0);
         this.velocity = new Vector2(4f, 4f);
@@ -113,31 +123,9 @@ public abstract class PhysicsComponent extends Component {
     protected void calculateNextPosition(float deltaTime) {
         if (currentDirection == null) return;
 
-        float testX = currentEntityPosition.x;
-        float testY = currentEntityPosition.y;
-
+        Vector2 point = new Vector2(currentEntityPosition);
         velocity.scl(deltaTime);
-
-        switch (currentDirection) {
-            case LEFT:
-                testX -= velocity.x;
-                break;
-            case RIGHT:
-                testX += velocity.x;
-                break;
-            case UP:
-                testY += velocity.y;
-                break;
-            case DOWN:
-                testY -= velocity.y;
-                break;
-            default:
-                break;
-        }
-
-        nextEntityPosition.x = testX;
-        nextEntityPosition.y = testY;
-
+        nextEntityPosition = currentDirection.adjustPosition(point, velocity);
         //velocity
         velocity.scl(1 / deltaTime);
     }

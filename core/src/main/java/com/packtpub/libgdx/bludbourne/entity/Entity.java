@@ -1,20 +1,14 @@
 package com.packtpub.libgdx.bludbourne.entity;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
-import com.packtpub.libgdx.bludbourne.MapManager;
 import com.packtpub.libgdx.bludbourne.components.base.BehaviorComponent;
 import com.packtpub.libgdx.bludbourne.components.base.Component;
 import com.packtpub.libgdx.bludbourne.components.base.GraphicsComponent;
 import com.packtpub.libgdx.bludbourne.components.base.PhysicsComponent;
+import com.packtpub.libgdx.bludbourne.map.MapManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
 
 /**
  * Created on 04/10/2017.

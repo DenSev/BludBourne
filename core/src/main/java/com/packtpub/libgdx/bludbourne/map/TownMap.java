@@ -3,7 +3,6 @@ package com.packtpub.libgdx.bludbourne.map;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.packtpub.libgdx.bludbourne.MapManager;
 import com.packtpub.libgdx.bludbourne.components.base.Component;
 import com.packtpub.libgdx.bludbourne.entity.Entity;
 import com.packtpub.libgdx.bludbourne.entity.EntityConfig;

@@ -5,49 +5,36 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
-import com.packtpub.libgdx.bludbourne.MapManager;
 import com.packtpub.libgdx.bludbourne.components.base.PhysicsComponent;
-import com.packtpub.libgdx.bludbourne.entity.Direction;
 import com.packtpub.libgdx.bludbourne.entity.Entity;
 import com.packtpub.libgdx.bludbourne.entity.State;
 import com.packtpub.libgdx.bludbourne.map.Map;
 import com.packtpub.libgdx.bludbourne.map.MapFactory;
-import org.apache.commons.lang3.ArrayUtils;
+import com.packtpub.libgdx.bludbourne.map.MapManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.EnumMap;
 import java.util.Iterator;
-import java.util.function.Consumer;
 
 public class PlayerPhysicsComponent extends PhysicsComponent {
     private static final Logger LOGGER = LoggerFactory.getLogger(PlayerPhysicsComponent.class);
 
-    private State state;
     private Vector3 mouseSelectCoordinates;
     private boolean isMouseSelectEnabled = false;
     private Ray selectionRay;
     private float selectRayMaximumDistance = 32.0f;
 
     public PlayerPhysicsComponent() {
-        handlers.put(MESSAGE.CURRENT_STATE, (Object... args) -> state = (State) args[0]);
-        handlers.put(MESSAGE.CURRENT_DIRECTION, (Object... args) -> currentDirection = (Direction) args[0]);
         handlers.put(MESSAGE.INIT_SELECT_ENTITY, (Object... args) -> {
             mouseSelectCoordinates = (Vector3) args[0];
             isMouseSelectEnabled = true;
         });
-        handlers.put(MESSAGE.INIT_START_POSITION, (Object... args) -> {
-            currentEntityPosition = (Vector2) args[0];
-            nextEntityPosition.set(currentEntityPosition.x, currentEntityPosition.y);
-        });
 
         boundingBoxLocation = BoundingBoxLocation.BOTTOM_CENTER;
         initBoundingBox(0.3f, 0.5f);
-
         mouseSelectCoordinates = new Vector3(0, 0, 0);
         selectionRay = new Ray(new Vector3(), new Vector3());
     }
