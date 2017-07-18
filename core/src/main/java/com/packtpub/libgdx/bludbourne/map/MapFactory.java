@@ -3,9 +3,11 @@ package com.packtpub.libgdx.bludbourne.map;
 
 import java.util.EnumMap;
 
-public class MapFactory {
+public enum MapFactory {
+
+    INSTANCE;
     //All maps for the game
-    private static EnumMap<MapType, Map> maps = new EnumMap<>(MapType.class);
+    private static final EnumMap<MapType, Map> MAPS = new EnumMap<>(MapType.class);
 
     public enum MapType {
         TOP_WORLD {
@@ -30,11 +32,11 @@ public class MapFactory {
         public abstract Map getMap();
     }
 
-    public static Map getMap(MapType mapType) {
-        Map map = maps.get(mapType);
+    public Map getMap(MapType mapType) {
+        Map map = MAPS.get(mapType);
         if (map == null) {
             map = mapType.getMap();
-            maps.put(mapType, map);
+            MAPS.put(mapType, map);
         }
         return map;
     }

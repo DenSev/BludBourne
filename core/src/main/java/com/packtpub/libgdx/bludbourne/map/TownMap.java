@@ -3,10 +3,10 @@ package com.packtpub.libgdx.bludbourne.map;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.packtpub.libgdx.bludbourne.components.base.Component;
 import com.packtpub.libgdx.bludbourne.entity.Entity;
 import com.packtpub.libgdx.bludbourne.entity.EntityConfig;
 import com.packtpub.libgdx.bludbourne.entity.EntityFactory;
+import com.packtpub.libgdx.bludbourne.handlers.base.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,18 +41,18 @@ public class TownMap extends Map {
     }
 
     @Override
-    public void updateMapEntities(MapManager mapMgr, Batch batch, float delta) {
+    public void updateMapEntities(Batch batch, float delta) {
         for (int i = 0; i < mapEntities.size; i++) {
-            mapEntities.get(i).update(mapMgr, batch, delta);
+            mapEntities.get(i).update(batch, delta);
         }
     }
 
     private Entity initEntity(EntityConfig entityConfig, Vector2 position) {
         Entity entity = EntityFactory.getEntity(entityConfig, EntityFactory.EntityType.NPC);
-        entity.sendMessage(Component.MESSAGE.LOAD_ANIMATIONS, entity.getEntityConfig());
-        entity.sendMessage(Component.MESSAGE.INIT_START_POSITION, position);
-        entity.sendMessage(Component.MESSAGE.INIT_STATE, entity.getEntityConfig().getState());
-        entity.sendMessage(Component.MESSAGE.INIT_DIRECTION, entity.getEntityConfig().getDirection());
+        entity.sendMessage(Message.LOAD_ANIMATIONS, entity.getEntityConfig());
+        entity.sendMessage(Message.INIT_START_POSITION, position);
+        entity.sendMessage(Message.INIT_STATE, entity.getEntityConfig().getState());
+        entity.sendMessage(Message.INIT_DIRECTION, entity.getEntityConfig().getDirection());
 
         return entity;
     }

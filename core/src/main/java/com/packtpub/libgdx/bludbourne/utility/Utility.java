@@ -1,11 +1,14 @@
 package com.packtpub.libgdx.bludbourne.utility;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +19,15 @@ public class Utility {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Utility.class);
     public static final AssetManager assetManager = new AssetManager();
+
+    private static final String STATUSUI_TEXTURE_ATLAS_PATH = "skins/statusui.atlas";
+    private static final String STATUSUI_SKIN_PATH = "skins/statusui.json";
+    private static final String ITEMS_TEXTURE_ATLAS_PATH = "skins/items.atlas";
+    private static final String ITEMS_SKIN_PATH = "skins/items.json";
+
+    public static final TextureAtlas STATUSUI_TEXTUREATLAS = new TextureAtlas(STATUSUI_TEXTURE_ATLAS_PATH);
+    public static final TextureAtlas ITEMS_TEXTUREATLAS = new TextureAtlas(ITEMS_TEXTURE_ATLAS_PATH);
+    public static final Skin STATUSUI_SKIN = new Skin(Gdx.files.internal(STATUSUI_SKIN_PATH), STATUSUI_TEXTUREATLAS);
 
 
     private static InternalFileHandleResolver filePathResolver = new InternalFileHandleResolver();
@@ -75,7 +87,7 @@ public class Utility {
 
     public static void loadTextureAsset(String textureFilenamePath) {
         if (textureFilenamePath == null ||
-                textureFilenamePath.isEmpty()) {
+            textureFilenamePath.isEmpty()) {
             return;
         }
         //load asset

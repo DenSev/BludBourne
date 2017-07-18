@@ -3,54 +3,58 @@ package com.packtpub.libgdx.bludbourne.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
-import com.packtpub.libgdx.bludbourne.components.*;
-import com.packtpub.libgdx.bludbourne.components.base.Component;
+import com.packtpub.libgdx.bludbourne.handlers.NPCBehaviorHandler;
+import com.packtpub.libgdx.bludbourne.handlers.NPCGraphicsHandler;
+import com.packtpub.libgdx.bludbourne.handlers.NPCPhysicsHandler;
+import com.packtpub.libgdx.bludbourne.handlers.PlayerGraphicsHandler;
+import com.packtpub.libgdx.bludbourne.handlers.PlayerInputHandler;
+import com.packtpub.libgdx.bludbourne.handlers.PlayerPhysicsHandler;
+import com.packtpub.libgdx.bludbourne.handlers.base.Message;
+import com.packtpub.libgdx.bludbourne.utility.MapperProvider;
 
 import java.util.ArrayList;
 
 public class EntityFactory {
-    private static final Json JSON = new Json();
     public enum EntityType {
         PLAYER,
         DEMO_PLAYER,
         NPC
     }
 
-    public static String PLAYER_CONFIG = "scripts/player.JSON";
+    private static final String PLAYER_CONFIG = "scripts/player.JSON";
 
     public static Entity getEntity(EntityType entityType) {
         Entity entity = null;
         switch (entityType) {
             case PLAYER:
-                entity = new Entity(new PlayerInputComponent(), new PlayerGraphicsComponent(), new PlayerPhysicsComponent());
+                entity = new Entity(PlayerInputHandler.instance(), PlayerGraphicsHandler.instance(), PlayerPhysicsHandler.instance());
                 entity.setEntityConfig(getEntityConfig(EntityFactory.PLAYER_CONFIG));
-                entity.sendMessage(Component.MESSAGE.LOAD_ANIMATIONS, entity.getEntityConfig());
+                entity.sendMessage(Message.LOAD_ANIMATIONS, entity.getEntityConfig());
                 return entity;
             case DEMO_PLAYER:
-                entity = new Entity(new NPCBehaviorComponent(), new PlayerGraphicsComponent(), new PlayerPhysicsComponent());
+                entity = new Entity(NPCBehaviorHandler.instance(), PlayerGraphicsHandler.instance(), PlayerPhysicsHandler.instance());
                 return entity;
             case NPC:
-                entity = new Entity(new NPCBehaviorComponent(), new NPCGraphicsComponent(), new NPCPhysicsComponent());
+                entity = new Entity(NPCBehaviorHandler.instance(), NPCGraphicsHandler.instance(), NPCPhysicsHandler.instance());
                 return entity;
             default:
                 return null;
         }
     }
 
-    public static Entity getEntity(EntityConfig entityConfig, EntityType entityType){
+    public static Entity getEntity(EntityConfig entityConfig, EntityType entityType) {
         Entity entity = null;
         switch (entityType) {
             case PLAYER:
-                entity = new Entity(entityConfig, new PlayerInputComponent(), new PlayerGraphicsComponent(), new PlayerPhysicsComponent());
-                entity.sendMessage(Component.MESSAGE.LOAD_ANIMATIONS, entity.getEntityConfig());
+                entity = new Entity(entityConfig, PlayerInputHandler.instance(), PlayerGraphicsHandler.instance(), PlayerPhysicsHandler.instance());
+                entity.sendMessage(Message.LOAD_ANIMATIONS, entity.getEntityConfig());
                 break;
             case DEMO_PLAYER:
-                entity = new Entity(entityConfig, new NPCBehaviorComponent(), new PlayerGraphicsComponent(), new PlayerPhysicsComponent());
+                entity = new Entity(entityConfig, NPCBehaviorHandler.instance(), PlayerGraphicsHandler.instance(), PlayerPhysicsHandler.instance());
                 break;
             case NPC:
-                entity = new Entity(entityConfig, new NPCBehaviorComponent(), new NPCGraphicsComponent(), new NPCPhysicsComponent());
+                entity = new Entity(entityConfig, NPCBehaviorHandler.instance(), NPCGraphicsHandler.instance(), NPCPhysicsHandler.instance());
                 break;
             default:
                 break;
@@ -59,16 +63,16 @@ public class EntityFactory {
     }
 
     public static EntityConfig getEntityConfig(String configFilePath) {
-        return JSON.fromJson(EntityConfig.class, Gdx.files.internal(configFilePath));
+        return MapperProvider.INSTANCE.parse(EntityConfig.class, Gdx.files.internal(configFilePath));
     }
 
     public static Array<EntityConfig> getEntityConfigs(String configFilePath) {
-        Array<EntityConfig> configs = new Array<EntityConfig>();
+        Array<EntityConfig> configs = new Array<>();
 
-        ArrayList<JsonValue> list = JSON.fromJson(ArrayList.class, Gdx.files.internal(configFilePath));
+        ArrayList<JsonValue> list = MapperProvider.INSTANCE.parse(ArrayList.class, Gdx.files.internal(configFilePath));
 
         for (JsonValue jsonVal : list) {
-            configs.add(JSON.readValue(EntityConfig.class, jsonVal));
+            configs.add(MapperProvider.INSTANCE.mapper().readValue(EntityConfig.class, jsonVal));
         }
 
         return configs;

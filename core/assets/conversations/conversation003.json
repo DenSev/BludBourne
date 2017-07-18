@@ -11,19 +11,19 @@ conversations: {
         3: {
                 id: 3
                 dialog: Ok
-        }		
+        }
 }
 associatedChoices: {
         1: [
                 {
-                        class: com.packtpub.libgdx.bludbourne.dialog.ConversationChoice
+                  class: com.packtpub.libgdx.bludbourne.conversation.ConversationChoice
                         sourceId: 1
                         destinationId: 2
                         choicePhrase: Yes
 						conversationCommandEvent: LOAD_STORE_INVENTORY
                 }
                 {
-                        class: com.packtpub.libgdx.bludbourne.dialog.ConversationChoice
+                  class: com.packtpub.libgdx.bludbourne.conversation.ConversationChoice
                         sourceId: 1
                         destinationId: 3
                         choicePhrase: No

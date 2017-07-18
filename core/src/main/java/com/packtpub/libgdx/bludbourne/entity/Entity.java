@@ -1,74 +1,106 @@
 package com.packtpub.libgdx.bludbourne.entity;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Rectangle;
-import com.packtpub.libgdx.bludbourne.components.base.BehaviorComponent;
-import com.packtpub.libgdx.bludbourne.components.base.Component;
-import com.packtpub.libgdx.bludbourne.components.base.GraphicsComponent;
-import com.packtpub.libgdx.bludbourne.components.base.PhysicsComponent;
-import com.packtpub.libgdx.bludbourne.map.MapManager;
+import com.packtpub.libgdx.bludbourne.handlers.base.BehaviorHandler;
+import com.packtpub.libgdx.bludbourne.handlers.base.GraphicsHandler;
+import com.packtpub.libgdx.bludbourne.handlers.base.Message;
+import com.packtpub.libgdx.bludbourne.handlers.base.PhysicsHandler;
+import com.packtpub.libgdx.bludbourne.observers.EntityObserver;
+import com.packtpub.libgdx.bludbourne.observers.EntitySubject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Created on 04/10/2017.
  */
-public class Entity {
+public class Entity extends EntitySubject {
     private static final Logger LOGGER = LoggerFactory.getLogger(Entity.class);
 
     public final static int FRAME_WIDTH = 16;
     public final static int FRAME_HEIGHT = 16;
+
     private EntityConfig entityConfig;
+    private EntityState entityState = new EntityState();
 
     public boolean isSelected = false;
-    private BehaviorComponent behaviorComponent;
-    private GraphicsComponent graphicsComponent;
-    private PhysicsComponent physicsComponent;
 
-    public Entity(EntityConfig entityConfig, BehaviorComponent behaviorComponent, GraphicsComponent graphicsComponent, PhysicsComponent physicsComponent) {
+
+    private BehaviorHandler behaviorHandler;
+    private GraphicsHandler graphicsHandler;
+    private PhysicsHandler physicsHandler;
+
+    public void init() {
+        //sendMessage(Message.INIT_STATE, State.IDLE);
+        //sendMessage(Message.INIT_DIRECTION, Direction.DOWN);
+        //sendMessage(Message.INIT_START_POSITION, );
+        sendMessage(Message.INIT_BOUNDING_BOX);
+    }
+
+    public Entity(EntityConfig entityConfig,
+                  BehaviorHandler behaviorHandler,
+                  GraphicsHandler graphicsHandler,
+                  PhysicsHandler physicsHandler) {
+
         LOGGER.debug("Entity created with entityID {}", entityConfig.getEntityID());
         this.entityConfig = entityConfig;
-        this.behaviorComponent = behaviorComponent;
-        this.graphicsComponent = graphicsComponent;
-        this.physicsComponent = physicsComponent;
+        this.behaviorHandler = behaviorHandler;
+        this.graphicsHandler = graphicsHandler;
+        this.physicsHandler = physicsHandler;
+        init();
     }
 
-    public Entity(BehaviorComponent behaviorComponent, GraphicsComponent graphicsComponent, PhysicsComponent physicsComponent) {
+    public Entity(BehaviorHandler behaviorHandler,
+                  GraphicsHandler graphicsHandler,
+                  PhysicsHandler physicsHandler) {
         LOGGER.debug("Entity created");
-        this.behaviorComponent = behaviorComponent;
-        this.graphicsComponent = graphicsComponent;
-        this.physicsComponent = physicsComponent;
+        this.behaviorHandler = behaviorHandler;
+        this.graphicsHandler = graphicsHandler;
+        this.physicsHandler = physicsHandler;
+        init();
     }
 
-    public void sendMessage(Component.MESSAGE message, Object... args) {
+    public void sendMessage(Message message, Object... args) {
         LOGGER.trace("Message sent {}, with args {}", message, args);
-        behaviorComponent.receiveMessage(message, args);
-        graphicsComponent.receiveMessage(message, args);
-        physicsComponent.receiveMessage(message, args);
+        behaviorHandler.handle(this, message, args);
+        graphicsHandler.handle(this, message, args);
+        physicsHandler.handle(this, message, args);
     }
 
-    public void update(MapManager mapMgr, Batch batch, float delta) {
-        this.behaviorComponent.update(this, delta);
-        this.physicsComponent.update(this, mapMgr, delta);
-        this.graphicsComponent.update(this, mapMgr, batch, delta);
+    public void update(Batch batch, float delta) {
+        this.behaviorHandler.update(this, delta);
+        this.physicsHandler.update(this, delta);
+        this.graphicsHandler.update(this, batch, delta);
 
     }
 
     public void dispose() {
-        this.behaviorComponent.dispose();
-        this.physicsComponent.dispose();
-        this.graphicsComponent.dispose();
+        this.behaviorHandler.dispose();
+        this.physicsHandler.dispose();
+        this.graphicsHandler.dispose();
     }
 
-    public void registerComponents(BehaviorComponent behaviorComponent, GraphicsComponent graphicsComponent, PhysicsComponent physicsComponent) {
+    public void registerComponents(BehaviorHandler behaviorHandler, GraphicsHandler graphicsHandler, PhysicsHandler physicsHandler) {
         LOGGER.debug("components registered for entityID {}", this.entityConfig.getEntityID());
-        this.behaviorComponent = behaviorComponent;
-        this.graphicsComponent = graphicsComponent;
-        this.physicsComponent = physicsComponent;
+        this.behaviorHandler = behaviorHandler;
+        this.graphicsHandler = graphicsHandler;
+        this.physicsHandler = physicsHandler;
     }
 
-    public Rectangle getCurrentBoundingBox() {
-        return physicsComponent.boundingBox;
+    public void registerObserver(EntityObserver observer) {
+        this.addObserver(observer);
+    }
+
+    public void unregisterObservers() {
+        this.removeAllObservers();
+    }
+
+
+    public void updateInput(float delta) {
+        this.behaviorHandler.update(this, delta);
+    }
+
+    public BehaviorHandler getInputProcessor() {
+        return this.behaviorHandler;
     }
 
     public EntityConfig getEntityConfig() {
@@ -77,5 +109,13 @@ public class Entity {
 
     public void setEntityConfig(EntityConfig entityConfig) {
         this.entityConfig = entityConfig;
+    }
+
+    public EntityState getEntityState() {
+        return entityState;
+    }
+
+    public void setEntityState(EntityState entityState) {
+        this.entityState = entityState;
     }
 }

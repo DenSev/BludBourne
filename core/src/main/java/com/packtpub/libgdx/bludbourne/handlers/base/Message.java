@@ -1,0 +1,22 @@
+package com.packtpub.libgdx.bludbourne.handlers.base;
+
+/**
+ * Created on 03.05.2017.
+ */
+public enum Message {
+
+    CURRENT_POSITION,
+    INIT_START_POSITION,
+    CURRENT_DIRECTION,
+    CURRENT_STATE,
+    COLLISION_WITH_MAP,
+    COLLISION_WITH_ENTITY,
+    LOAD_ANIMATIONS,
+    INIT_DIRECTION,
+    INIT_STATE,
+    INIT_SELECT_ENTITY,
+    ENTITY_SELECTED,
+    ENTITY_DESELECTED,
+    INIT_BOUNDING_BOX
+
+}

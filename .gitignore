@@ -14,10 +14,12 @@ target/
 
 # Exclude other generated items
 test-output/
+reports/
 .DS_Store
 .checkstyle
 .pmd
 .pmdruleset.xml
+*.sav
 
 # Exclude gradle generated files
 .gradle/

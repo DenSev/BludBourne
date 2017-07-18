@@ -1,12 +1,13 @@
 apply plugin: "java"
 
 sourceCompatibility = 1.8
-sourceSets.main.java.srcDirs = ["src/"]
+//sourceSets.main.java.srcDirs = ["src/"]
 
 project.ext.mainClassName = "com.packtpub.libgdx.bludbourne.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../core/assets");
 
 task run(dependsOn: classes, type: JavaExec) {
+    println sourceSets.main.java.srcDirs
     main = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
@@ -14,9 +15,10 @@ task run(dependsOn: classes, type: JavaExec) {
     ignoreExitValue = true
 }
 
+/*
 task dist(type: Jar) {
-    from files(sourceSets.main.output.classesDir)
-    from files(sourceSets.main.output.resourcesDir)
+    from files(sourceSets.main.allSource)
+    from files(sourceSets.main.resources)
     from { configurations.compile.collect { zipTree(it) } }
     from files(project.assetsDir);
 
@@ -25,4 +27,4 @@ task dist(type: Jar) {
     }
 }
 
-dist.dependsOn classes
+dist.dependsOn classes*/

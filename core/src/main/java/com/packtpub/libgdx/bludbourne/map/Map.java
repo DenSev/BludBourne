@@ -7,7 +7,6 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
 import com.packtpub.libgdx.bludbourne.entity.Entity;
 import com.packtpub.libgdx.bludbourne.utility.Utility;
 import org.slf4j.Logger;
@@ -18,18 +17,16 @@ import java.util.Hashtable;
 public abstract class Map {
     private static final Logger LOGGER = LoggerFactory.getLogger(Map.class);
 
-    public final static float UNIT_SCALE = 1 / 16f;
+    public static final float UNIT_SCALE = 1 / 16f;
 
     //Map layers
-    protected final static String COLLISION_LAYER = "MAP_COLLISION_LAYER";
-    protected final static String SPAWNS_LAYER = "MAP_SPAWNS_LAYER";
-    protected final static String PORTAL_LAYER = "MAP_PORTAL_LAYER";
+    protected static final String COLLISION_LAYER = "MAP_COLLISION_LAYER";
+    protected static final String SPAWNS_LAYER = "MAP_SPAWNS_LAYER";
+    protected static final String PORTAL_LAYER = "MAP_PORTAL_LAYER";
 
     //Starting locations
-    protected final static String PLAYER_START = "PLAYER_START";
-    protected final static String NPC_START = "NPC_START";
-
-    protected Json json;
+    protected static final String PLAYER_START = "PLAYER_START";
+    protected static final String NPC_START = "NPC_START";
 
     protected Vector2 playerStartPositionRect;
     protected Vector2 closestPlayerStartPosition;
@@ -47,7 +44,6 @@ public abstract class Map {
     protected Array<Entity> mapEntities;
 
     Map(MapFactory.MapType mapType, String fullMapPath) {
-        json = new Json();
         mapEntities = new Array<Entity>(10);
         currentMapType = mapType;
         playerStart = new Vector2(0, 0);
@@ -89,6 +85,10 @@ public abstract class Map {
         specialNPCStartPositions = getSpecialNPCStartPositions();
     }
 
+    public void setPlayerStart(Vector2 playerStart) {
+        this.playerStart = playerStart;
+    }
+
     public Array<Entity> getMapEntities() {
         return mapEntities;
     }
@@ -97,7 +97,7 @@ public abstract class Map {
         return playerStart;
     }
 
-    public abstract void updateMapEntities(MapManager mapMgr, Batch batch, float delta);
+    public abstract void updateMapEntities(Batch batch, float delta);
 
     public MapLayer getCollisionLayer() {
         return collisionLayer;
@@ -153,8 +153,8 @@ public abstract class Map {
             }
 
             //This is meant for all the special spawn locations, a catch all, so ignore known ones
-            if (objectName.equalsIgnoreCase(NPC_START) ||
-                objectName.equalsIgnoreCase(PLAYER_START)) {
+            if (objectName.equalsIgnoreCase(NPC_START)
+                || objectName.equalsIgnoreCase(PLAYER_START)) {
                 continue;
             }
 
@@ -172,7 +172,12 @@ public abstract class Map {
     }
 
     private void setClosestStartPosition(final Vector2 position) {
-        LOGGER.debug("setClosestStartPosition INPUT: ({},{}), map type: {}", position.x, position.y, currentMapType.toString());
+        LOGGER.debug(
+            "setClosestStartPosition INPUT: ({},{}), map type: {}",
+            position.x,
+            position.y,
+            currentMapType.toString()
+        );
 
         //Get last known position on this map
         playerStartPositionRect.set(0, 0);
@@ -196,7 +201,12 @@ public abstract class Map {
                 if (distance < shortestDistance || shortestDistance == 0) {
                     closestPlayerStartPosition.set(playerStartPositionRect);
                     shortestDistance = distance;
-                    LOGGER.debug("closest START is: ({},{}), map type: {}" , closestPlayerStartPosition.x, closestPlayerStartPosition.y, currentMapType.toString());
+                    LOGGER.debug(
+                        "closest START is: ({},{}), map type: {}",
+                        closestPlayerStartPosition.x,
+                        closestPlayerStartPosition.y,
+                        currentMapType.toString()
+                    );
                 }
             }
         }
@@ -204,8 +214,9 @@ public abstract class Map {
     }
 
     public void setClosestStartPositionFromScaledUnits(Vector2 position) {
-        if (UNIT_SCALE <= 0)
+        if (UNIT_SCALE <= 0) {
             return;
+        }
 
         convertedUnits.set(position.x / UNIT_SCALE, position.y / UNIT_SCALE);
         setClosestStartPosition(convertedUnits);
